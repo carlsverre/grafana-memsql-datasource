@@ -1,8 +1,8 @@
 <query-editor-row ctrl="ctrl" class="generic-datasource-query-row">
-	<ul class="tight-form-list">
-    <li class="tight-form-item query-keyword">Query</li>
-    <li>
-      <metric-segment-model property="ctrl.target.target" get-options="ctrl.getOptions()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
-    </li>
-  </ul>
+    <ul class="tight-form-list">
+        <li class="tight-form-item query-keyword">Query</li>
+        <li class="tight-form-flex-wrapper">
+            <input type="text" class="tight-form-clear-input" style="width: 100%;" ng-model="ctrl.target.target" spellcheck='false'></input>
+        </li>
+    </ul>
 </query-editor-row>

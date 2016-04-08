@@ -1,30 +1,30 @@
 {
-  "name": "SimpleJson",
-  "id": "grafana-simple-json-datasource",
+  "name": "MemSQL",
+  "id": "grafana-memsql-datasource",
   "type": "datasource",
 
   "staticRoot": ".",
 
   "partials": {
-    "config": "public/app/plugins/datasource/simplejson/partials/config.html"
+    "config": "public/app/plugins/datasource/memsql/partials/config.html"
   },
 
   "metrics": true,
   "annotations": true,
 
   "info": {
-    "description": "simple json datasource",
+    "description": "MemSQL datasource",
     "author": {
-      "name": "Raintank Inc.",
-      "url": "http://raintank.io"
+      "name": "Carl Sverre",
+      "url": "http://www.carlsverre.com"
     },
     "logos": {
-      "small": "src/img/simpleJson_logo.svg",
-      "large": "src/img/simpleJson_logo.svg"
+      "small": "img/memsql_logo.svg",
+      "large": "img/memsql_logo.svg"
     },
     "links": [
-      {"name": "GitHub", "url": "https://github.com/grafana/simple-json-datasource"},
-      {"name": "MIT License", "url": "https://github.com/grafana/simple-json-datasource/blob/master/LICENSE"}
+      {"name": "GitHub", "url": "https://github.com/carlsverre/grafana-memsql-datasource"},
+      {"name": "MIT License", "url": "https://github.com/carlsverre/grafana-memsql-datasource/blob/master/LICENSE"}
     ],
     "version": "1.0.0",
     "updated": "2016-02-10"
