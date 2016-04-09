@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-System.register([], function (_export, _context) {
-    var _createClass, GenericDatasource;
+System.register(["./util", "lodash"], function (_export, _context) {
+    var parseInterval, _, _createClass, GenericDatasource;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -10,7 +10,11 @@ System.register([], function (_export, _context) {
     }
 
     return {
-        setters: [],
+        setters: [function (_util) {
+            parseInterval = _util.parseInterval;
+        }, function (_lodash) {
+            _ = _lodash.default;
+        }],
         execute: function () {
             _createClass = function () {
                 function defineProperties(target, props) {
@@ -30,8 +34,8 @@ System.register([], function (_export, _context) {
                 };
             }();
 
-            _export('GenericDatasource', GenericDatasource = function () {
-                function GenericDatasource(instanceSettings, $q, backendSrv) {
+            _export("GenericDatasource", GenericDatasource = function () {
+                function GenericDatasource(instanceSettings, $q, backendSrv, templateSrv) {
                     _classCallCheck(this, GenericDatasource);
 
                     this.type = instanceSettings.type;
@@ -39,85 +43,83 @@ System.register([], function (_export, _context) {
                     this.name = instanceSettings.name;
                     this.q = $q;
                     this.backendSrv = backendSrv;
+                    this.templateSrv = templateSrv;
                 }
 
-                // Called once per panel (graph)
+                // Used for testing datasource in datasource configuration pange
 
 
                 _createClass(GenericDatasource, [{
-                    key: 'query',
-                    value: function query(options) {
-                        console.log(options);
-                        var query = this.buildQueryParameters(options);
-                        console.log(query);
-
-                        if (query.targets.length <= 0) {
-                            return this.q.when([]);
-                        }
-
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + '/query',
-                            data: query,
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                    }
-                }, {
-                    key: 'testDatasource',
+                    key: "testDatasource",
                     value: function testDatasource() {
                         return this.backendSrv.datasourceRequest({
-                            url: this.url + '/',
+                            url: this.url + '/grafana/',
                             method: 'GET'
                         }).then(function (response) {
                             if (response.status === 200) {
-                                return { status: "success", message: "Data source is working", title: "Success" };
+                                var data = response.data;
+                                if (data && data.service === "Memlytics Grafana") {
+                                    return {
+                                        status: "success",
+                                        title: "Success",
+                                        message: "Connected to MemSQL analytics proxy."
+                                    };
+                                }
                             }
+
+                            return {
+                                status: "error",
+                                title: "Connection failed",
+                                message: "Failed to find MemSQL analytics proxy at the provided url."
+                            };
+                        }, function (err) {
+                            return {
+                                status: "error",
+                                title: "Connection failed",
+                                message: "Could not connect to a MemSQL analytics proxy at the provided url."
+                            };
                         });
                     }
                 }, {
-                    key: 'annotationQuery',
-                    value: function annotationQuery(options) {
+                    key: "query",
+                    value: function query(options) {
+                        var _this = this;
+
+                        console.log(options);
+                        var queries = _(options.targets).filter(function (t) {
+                            return !t.hide && t.target;
+                        }).map(function (t) {
+                            return {
+                                alias: t.alias || t.refId,
+                                sql: _this.templateSrv.replace(t.target)
+                            };
+                        }).value();
+
+                        if (queries.length === 0) {
+                            return this.q.when({ data: [] });
+                        }
+
                         return this.backendSrv.datasourceRequest({
-                            url: this.url + '/annotations',
-                            method: 'POST',
-                            data: options
-                        }).then(function (result) {
-                            return result.data;
-                        });
-                    }
-                }, {
-                    key: 'metricFindQuery',
-                    value: function metricFindQuery(options) {
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + '/search',
-                            data: options,
+                            url: this.url + '/grafana/query/',
+                            data: {
+                                queries: queries,
+                                timeWindow: {
+                                    // convert timestamps to milliseconds since epoch
+                                    from: options.range.from.valueOf(),
+                                    to: options.range.to.valueOf(),
+                                    interval: parseInterval(options.interval)
+                                }
+                            },
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
-                    }
-                }, {
-                    key: 'mapToTextValue',
-                    value: function mapToTextValue(result) {
-                        return _.map(result.data, function (d, i) {
-                            return { text: d, value: i };
                         });
-                    }
-                }, {
-                    key: 'buildQueryParameters',
-                    value: function buildQueryParameters(options) {
-                        //remove placeholder targets
-                        options.targets = _.filter(options.targets, function (target) {
-                            return target.target !== 'select metric';
-                        });
-
-                        return options;
                     }
                 }]);
 
                 return GenericDatasource;
             }());
 
-            _export('GenericDatasource', GenericDatasource);
+            _export("GenericDatasource", GenericDatasource);
         }
     };
 });

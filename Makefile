@@ -1,10 +1,6 @@
-run-memsql:
-	docker run -d --name memsql memsql/quickstart
-
 storage:
 	docker volume rm grafana-storage || true
 	docker volume create --name grafana-storage
-
 
 dev:
 	grunt

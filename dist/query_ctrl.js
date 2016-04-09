@@ -1,7 +1,7 @@
 'use strict';
 
 System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
-    var QueryCtrl, GenericDatasourceQueryCtrl;
+    var QueryCtrl, _createClass, DEFAULT_QUERY, GenericDatasourceQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -38,19 +38,44 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
             QueryCtrl = _appPluginsSdk.QueryCtrl;
         }, function (_cssQueryEditorCss) {}],
         execute: function () {
+            _createClass = function () {
+                function defineProperties(target, props) {
+                    for (var i = 0; i < props.length; i++) {
+                        var descriptor = props[i];
+                        descriptor.enumerable = descriptor.enumerable || false;
+                        descriptor.configurable = true;
+                        if ("value" in descriptor) descriptor.writable = true;
+                        Object.defineProperty(target, descriptor.key, descriptor);
+                    }
+                }
+
+                return function (Constructor, protoProps, staticProps) {
+                    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+                    if (staticProps) defineProperties(Constructor, staticProps);
+                    return Constructor;
+                };
+            }();
+
+            DEFAULT_QUERY = '\nSELECT (ts - (ts % :interval)) AS TS, AVG(value) AS Value\nFROM analytics\nWHERE\n    ts >= :from AND ts <= :to AND metric = ""\nGROUP BY 1\n'.trim();
+
             _export('GenericDatasourceQueryCtrl', GenericDatasourceQueryCtrl = function (_QueryCtrl) {
                 _inherits(GenericDatasourceQueryCtrl, _QueryCtrl);
 
-                function GenericDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
+                function GenericDatasourceQueryCtrl($scope, $injector) {
                     _classCallCheck(this, GenericDatasourceQueryCtrl);
 
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GenericDatasourceQueryCtrl).call(this, $scope, $injector));
 
-                    _this.scope = $scope;
-                    _this.uiSegmentSrv = uiSegmentSrv;
-                    _this.target.target = _this.target.target || 'select * from metrics';
+                    _this.target.target = _this.target.target || DEFAULT_QUERY;
                     return _this;
                 }
+
+                _createClass(GenericDatasourceQueryCtrl, [{
+                    key: 'refresh',
+                    value: function refresh() {
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }]);
 
                 return GenericDatasourceQueryCtrl;
             }(QueryCtrl));

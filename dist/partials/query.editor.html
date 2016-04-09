@@ -1,8 +1,38 @@
-<query-editor-row ctrl="ctrl" class="generic-datasource-query-row">
+<query-editor-row ctrl="ctrl" class="memsql-datasource-query-row">
     <ul class="tight-form-list">
-        <li class="tight-form-item query-keyword">Query</li>
+        <li class="tight-form-item query-keyword" style="width: 75px">
+            QUERY
+        </li>
         <li class="tight-form-flex-wrapper">
-            <input type="text" class="tight-form-clear-input" style="width: 100%;" ng-model="ctrl.target.target" spellcheck='false'></input>
+            <textarea
+                class="tight-form-textarea query-editor"
+                style="width: 100%;"
+                spellcheck="false"
+                ng-model="ctrl.target.target"
+                ng-model-options="{ debounce: 600 }"
+                ng-change="ctrl.refresh()"
+                ng-blur="ctrl.refresh()"
+            />
         </li>
     </ul>
 </query-editor-row>
+
+<div class="tight-form">
+    <ul class="tight-form-list">
+        <li class="tight-form-item query-keyword tight-form-align" style="width: 75px;">
+            ALIAS BY
+        </li>
+        <li class="tight-form-flex-wrapper">
+            <input
+                type="text"
+                class="tight-form-clear-input input-xlarge"
+                ng-model="ctrl.target.alias"
+                spellcheck='false'
+                placeholder="Alias"
+                ng-blur="ctrl.refresh()"
+                style="width: 100%"
+            />
+        </li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
