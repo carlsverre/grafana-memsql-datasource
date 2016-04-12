@@ -1,11 +1,11 @@
 <query-editor-row ctrl="ctrl" class="memsql-datasource-query-row">
     <ul class="tight-form-list">
-        <li class="tight-form-item query-keyword" style="width: 75px">
+        <li class="tight-form-item query-keyword" style="width: 90px">
             QUERY
         </li>
         <li class="tight-form-flex-wrapper">
             <textarea
-                class="tight-form-textarea query-editor"
+                class="tight-form-textarea query-editor memsql-query-editor"
                 style="width: 100%;"
                 spellcheck="false"
                 ng-model="ctrl.target.target"
@@ -19,7 +19,7 @@
 
 <div class="tight-form">
     <ul class="tight-form-list">
-        <li class="tight-form-item query-keyword tight-form-align" style="width: 75px;">
+        <li class="tight-form-item query-keyword tight-form-align" style="width: 90px;">
             ALIAS BY
         </li>
         <li class="tight-form-flex-wrapper">
@@ -31,6 +31,36 @@
                 placeholder="Alias"
                 ng-blur="ctrl.refresh()"
                 style="width: 100%"
+            />
+        </li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+
+<div class="tight-form">
+    <ul class="tight-form-list">
+        <li class="tight-form-item query-keyword tight-form-align" style="width: 90px;">
+            <i class="fa fa-search" /> METRICS
+        </li>
+        <li class="tight-form-flex-wrapper">
+            <metric-segment
+                segment="ctrl.metricSearchSegment"
+                get-options="ctrl.getMetrics()"
+                on-change="ctrl.changeMetric()"
+            />
+        </li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+<div class="tight-form">
+    <ul class="tight-form-list">
+        <li class="tight-form-item query-keyword tight-form-align" style="width: 90px;">
+            <i class="fa fa-search" /> VALUES
+        </li>
+        <li class="tight-form-flex-wrapper">
+            <metric-segment
+                segment="ctrl.metricValueSegment"
+                get-options="ctrl.getMetricValues()"
             />
         </li>
     </ul>

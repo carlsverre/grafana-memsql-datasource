@@ -1,6 +1,22 @@
-<h5 class="section-heading">Query</h5>
+<h5 class="section-heading">
+    Query
+    <tip>
+        You can use :from and :to in your query which will resolve to datetime
+        objects representing the current dashboard time window.
+    </tip>
+</h5>
+<p>
+    The query must return the following columns:
+</p>
+<pre>
+timestamp (datetime|timestamp) - when the annotation occurred
+title (string) - the title of the annotation
+tags (string, optional) - comma-delimited list of tags (required if text is specified)
+text (string, optional) - additional text for the annotation
+</pre>
 <div class="gf-form-group">
     <div class="gf-form">
-        <input type="text" class="gf-form-input" ng-model='ctrl.annotation.query' placeholder=""></input>
+        <textarea class="gf-form-input memsql-query-editor" ng-model='ctrl.annotation.query' rows=10 placeholder="select * from events where ts >= :from and ts <= :to">
+        </textarea>
     </div>
 </div>

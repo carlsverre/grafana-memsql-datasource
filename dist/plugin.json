@@ -10,7 +10,7 @@
   },
 
   "metrics": true,
-  "annotations": false,
+  "annotations": true,
 
   "info": {
     "description": "MemSQL datasource",

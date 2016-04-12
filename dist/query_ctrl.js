@@ -56,24 +56,56 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 };
             }();
 
-            DEFAULT_QUERY = '\nSELECT (ts - (ts % :interval)) AS TS, AVG(value) AS Value\nFROM analytics\nWHERE\n    ts >= :from AND ts <= :to AND metric = ""\nGROUP BY 1\n'.trim();
+            DEFAULT_QUERY = '\nSELECT (ts - (ts % :interval)) AS TS, AVG(value) AS Value, metric AS Segment\nFROM analytics\nWHERE\n    ts >= :from AND ts <= :to AND metric = ""\nGROUP BY 1\n'.trim();
 
             _export('GenericDatasourceQueryCtrl', GenericDatasourceQueryCtrl = function (_QueryCtrl) {
                 _inherits(GenericDatasourceQueryCtrl, _QueryCtrl);
 
-                function GenericDatasourceQueryCtrl($scope, $injector) {
+                function GenericDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
                     _classCallCheck(this, GenericDatasourceQueryCtrl);
 
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GenericDatasourceQueryCtrl).call(this, $scope, $injector));
 
                     _this.target.target = _this.target.target || DEFAULT_QUERY;
+                    _this.uiSegmentSrv = uiSegmentSrv;
+                    _this.metricSearchSegment = uiSegmentSrv.newSelectMetric();
+                    _this.metricValueSegment = uiSegmentSrv.newSelectTagValue();
                     return _this;
                 }
 
                 _createClass(GenericDatasourceQueryCtrl, [{
                     key: 'refresh',
                     value: function refresh() {
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.panelCtrl.refresh();
+                    }
+                }, {
+                    key: 'getMetrics',
+                    value: function getMetrics() {
+                        var _this2 = this;
+
+                        return this.datasource.metricsQuery().then(function (res) {
+                            return res.map(function (c) {
+                                return _this2.uiSegmentSrv.newSegment({
+                                    value: c,
+                                    expandable: false
+                                });
+                            });
+                        });
+                    }
+                }, {
+                    key: 'getMetricValues',
+                    value: function getMetricValues() {
+                        var _this3 = this;
+
+                        var metric = this.metricSearchSegment.value;
+                        return this.datasource.metricValueQuery(metric).then(function (res) {
+                            return res.map(function (c) {
+                                return _this3.uiSegmentSrv.newSegment({
+                                    value: c,
+                                    expandable: false
+                                });
+                            });
+                        });
                     }
                 }]);
 
