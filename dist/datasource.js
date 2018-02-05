@@ -165,7 +165,7 @@ System.register(["./util", "lodash", "moment"], function (_export, _context) {
                             return _.map(result.data, function (d, i) {
                                 return {
                                     text: d[0],
-                                    value: i
+                                    value: d[0]
                                 };
                             });
                         });

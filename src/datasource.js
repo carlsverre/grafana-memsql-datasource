@@ -117,7 +117,7 @@ export class GenericDatasource {
         }).then(result => {
             return _.map(result.data, (d, i) => ({
                 text: d[0],
-                value: i
+                value: d[0]
             }));
         });
     }
